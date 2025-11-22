@@ -2,8 +2,8 @@ name: Currency Rate Monitor
 
 on:
   schedule:
-    # 每小時執行一次，從 UTC 1:00 到 UTC 15:00（台灣時間 09:00 到 23:00）
-    - cron: '0 1-15 * * *'
+    # 每天三個時段執行：台灣時間 09:00, 12:00, 21:00（對應 UTC 01:00, 04:00, 13:00）
+    - cron: '0 1,4,13 * * *'
   workflow_dispatch:  # 允許手動觸發
 
 jobs:
