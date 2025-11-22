@@ -60,7 +60,7 @@ def get_hsbc_rate():
             data = [ele.text.strip() for ele in cols]
             
             # Telegram 訊息格式 (支援 HTML <b>粗體</b>)
-            rate_info += f"時間: {get_taiwan_time().strftime('%Y-%m-%d %H:%M')}\n"
+            rate_info = f"時間: {get_taiwan_time().strftime('%Y-%m-%d %H:%M')}\n"
             
             if len(cols) >= 3:
                 # 根據經驗：cols[1] 是銀行買入, cols[2] 是銀行賣出
