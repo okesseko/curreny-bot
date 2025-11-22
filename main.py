@@ -1,13 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import time
-import schedule
 from datetime import datetime
-from dotenv import load_dotenv
 import os
-
-# 載入 .env 檔案
-load_dotenv()
 
 # ================= 設定區 =================
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -85,34 +79,12 @@ def get_hsbc_rate():
     except Exception as e:
         return f"❌ 程式錯誤: {e}"
 
-def is_within_working_hours():
-    """檢查目前時間是否在運行時段內（9:00-24:00）"""
-    current_hour = datetime.now().hour
-    return START_HOUR <= current_hour < END_HOUR
-
-def job():
-    """執行匯率查詢並發送通知（僅在工作時段內）"""
-    if not is_within_working_hours():
-        print(f"[{datetime.now().strftime('%H:%M')}] 不在運行時段內，跳過本次執行")
-        return
+if __name__ == "__main__":
+    print(f"匯率監控機器人執行中...")
+    print(f"查詢幣別: {TARGET_CURRENCY}")
+    print(f"執行時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("-" * 50)
 
     msg = get_hsbc_rate()
     print(msg)
     send_telegram_notify(msg)
-
-if __name__ == "__main__":
-    print(f"匯率監控機器人啟動中...")
-    print(f"運行時段: 每天 {START_HOUR:02d}:00 - {END_HOUR:02d}:00")
-    print(f"查詢幣別: {TARGET_CURRENCY}")
-    print(f"查詢頻率: 每小時一次")
-    print("-" * 50)
-
-    # 啟動時先執行一次（會檢查時段）
-    job()
-
-    # 設定每小時執行一次
-    schedule.every(1).hours.do(job)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(60)

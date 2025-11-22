@@ -1,0 +1,20 @@
+# 确保所有文本文件在仓库中使用 LF
+* text=auto eol=lf
+
+# YAML 文件强制使用 LF
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Python 文件强制使用 LF
+*.py text eol=lf
+
+# Markdown 文件强制使用 LF
+*.md text eol=lf
+
+# Shell 脚本强制使用 LF
+*.sh text eol=lf
+
+# 配置文件强制使用 LF
+.gitignore text eol=lf
+.gitattributes text eol=lf
+requirements.txt text eol=lf
