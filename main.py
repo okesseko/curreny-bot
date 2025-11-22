@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import os
 
 # ================= 設定區 =================
@@ -10,7 +10,12 @@ TARGET_CURRENCY = "SGD"                  # 新加坡幣
 URL = "https://www.hsbc.com.tw/currency-rates/"
 START_HOUR = 9                           # 開始時間（早上9點）
 END_HOUR = 24                            # 結束時間（晚上12點 = 0點）
+TZ_OFFSET = timezone(timedelta(hours=8)) # 台灣時區 UTC+8
 # =========================================
+
+def get_taiwan_time():
+    """取得台灣時間 (UTC+8)"""
+    return datetime.now(TZ_OFFSET)
 
 def send_telegram_notify(msg):
     """發送 Telegram 通知"""
@@ -24,7 +29,7 @@ def send_telegram_notify(msg):
     try:
         resp = requests.post(url, data=payload)
         if resp.status_code == 200:
-            print(f"[{datetime.now().strftime('%H:%M')}] Telegram 通知發送成功")
+            print(f"[{get_taiwan_time().strftime('%H:%M')}] Telegram 通知發送成功")
         else:
             print(f"發送失敗: {resp.text}")
     except Exception as e:
@@ -32,7 +37,7 @@ def send_telegram_notify(msg):
 
 def get_hsbc_rate():
     """爬取匯豐銀行匯率"""
-    print(f"[{datetime.now()}] 正在查詢匯率...")
+    print(f"[{get_taiwan_time()}] 正在查詢匯率...")
     
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -56,7 +61,7 @@ def get_hsbc_rate():
             
             # Telegram 訊息格式 (支援 HTML <b>粗體</b>)
             rate_info = f"<b>💰 匯率到價通知</b>\n"
-            rate_info += f"時間: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+            rate_info += f"時間: {get_taiwan_time().strftime('%Y-%m-%d %H:%M')}\n"
             rate_info += f"幣別: {TARGET_CURRENCY} (新加坡幣)\n"
             
             if len(cols) >= 3:
@@ -82,7 +87,7 @@ def get_hsbc_rate():
 if __name__ == "__main__":
     print(f"匯率監控機器人執行中...")
     print(f"查詢幣別: {TARGET_CURRENCY}")
-    print(f"執行時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"執行時間: {get_taiwan_time().strftime('%Y-%m-%d %H:%M:%S')}")
     print("-" * 50)
 
     msg = get_hsbc_rate()
